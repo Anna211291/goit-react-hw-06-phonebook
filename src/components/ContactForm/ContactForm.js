@@ -8,6 +8,9 @@ import {
   StyledLable,
 } from './ContactForm.styled';
 import { RiUserAddFill } from 'react-icons/ri';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { addContact } from 'redux/contactSlice';
 
 const PhonebookValidSchema = Yup.object().shape({
   name: Yup.string()
@@ -20,7 +23,30 @@ const PhonebookValidSchema = Yup.object().shape({
     .required('No valide phone number. Must be min 7 max 11 numbers'),
 });
 
-export const ContactForm = ({ contacts }) => {
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contactList);
+
+  const onSubmit = ({ name, number }, { resetForm }) => {
+    const newContact = {
+      name,
+      number,
+      id: nanoid(),
+    };
+
+    const dublicateContact = contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (dublicateContact) {
+      alert(
+        'Contact with this name already exists. Please enter a different name.'
+      );
+      return;
+    }
+    dispatch(addContact(newContact));
+    resetForm();
+  };
   return (
     <Formik
       initialValues={{
@@ -28,10 +54,7 @@ export const ContactForm = ({ contacts }) => {
         number: '',
       }}
       validationSchema={PhonebookValidSchema}
-      onSubmit={(values, actions) => {
-        contacts(values);
-        actions.resetForm();
-      }}
+      onSubmit={onSubmit}
     >
       <StyledForm>
         <StyledLable>

@@ -1,14 +1,10 @@
 import { ContactListItem } from 'components/ContactListItem/ContactListItem';
 import { ContactListWrapper } from 'components/ContactList/ContactList.styled';
 
-export const ContactList = ({ contacts, onDelete }) => {
+export const ContactList = () => {
   return (
     <ContactListWrapper>
-      {contacts.map(contact => (
-        <li key={contact.id}>
-          <ContactListItem contact={contact} onDelete={onDelete} />
-        </li>
-      ))}
+      <ContactListItem />
     </ContactListWrapper>
   );
 };
